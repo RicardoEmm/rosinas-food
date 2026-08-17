@@ -21,6 +21,16 @@ func (r *GormCustomerRepository) DeleteById(ctx context.Context, id uuid.UUID) e
 	return r.db.WithContext(ctx).Delete(&domain.Customer{}, "id = ?", id).Error
 }
 
+func (r *GormCustomerRepository) ExistsByPhone(ctx context.Context, phone string) (bool, error) {
+	var count int64
+
+	if err := r.db.WithContext(ctx).Where("phone = ?", phone).Count(&count).Error; err != nil {
+		return false, err
+	}
+
+	return count > 0, nil
+}
+
 func (r *GormCustomerRepository) FindAll(ctx context.Context) ([]*domain.Customer, error) {
 	var customers []*domain.Customer
 
