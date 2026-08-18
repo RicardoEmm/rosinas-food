@@ -1,4 +1,4 @@
-package cmd
+package main
 
 import (
 	"github.com/RicardoEmm/rosinas-food/internal/config"
@@ -22,5 +22,5 @@ func main() {
 		CustomerHanlder: customerHandler,
 	})
 
-	router.Run(":", cfg.AppPort)
+	router.Run(":" + cfg.AppPort)
 }

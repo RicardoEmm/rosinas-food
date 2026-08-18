@@ -23,9 +23,9 @@ func Load() Config {
 		AppPort:    getEnv("APP_PORT", "8080"),
 		DBHost:     getEnv("DB_HOST", "localhost"),
 		DBPort:     getEnv("DB_PORT", "5432"),
-		DBUser:     getEnv("DB_USER", "postgres"),
-		DBPassword: getEnv("DB_PASSWORD", "postgres"),
-		DBName:     getEnv("DB_NAME", "rosinas_food"),
+		DBUser:     getEnv("POSTGRES_USER", "postgres"),
+		DBPassword: getEnv("POSTGRES_PASSWORD", "postgres"),
+		DBName:     getEnv("POSTGRES_DB", "food_db"),
 		DBSSLMode:  getEnv("DB_SSLMODE", "disable"),
 	}
 }
