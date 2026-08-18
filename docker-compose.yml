@@ -1,0 +1,61 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: rosinas_food_db
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - rosinas_food_net
+  
+  migrate:
+    image: migrate/migrate:latest
+    container_name: rosinas_food_migrate
+    volumes: 
+      - ./migrations:/migrations
+    env_file:
+      - .env
+    command: [
+      "-path", "/migrations",
+      "-database", "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}?sslmode=disable",
+      "up"
+    ]
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - rosinas_food_net
+  
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: rosinas_food_api
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate: 
+        condition: service_completed_successfully
+    networks:
+      - rosinas_food_net
+
+volumes:
+  pgdata:
+
+networks:
+  rosinas_food_net:
+    driver: bridge
