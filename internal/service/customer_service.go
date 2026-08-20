@@ -45,13 +45,13 @@ func (s *CustomerService) FindAll(ctx context.Context) ([]*domain.Customer, erro
 }
 
 func (s *CustomerService) Create(ctx context.Context, input dto.CreateCustomerInput) error {
-	ok, err := s.customerRepo.ExistsByPhone(ctx, input.Phone)
+	exists, err := s.customerRepo.ExistsByPhone(ctx, input.Phone)
 
 	if err != nil {
 		return ErrInternalServer
 	}
 
-	if !ok {
+	if exists {
 		return ErrPhoneAlreadyExists
 	}
 
@@ -66,5 +66,9 @@ func (s *CustomerService) Create(ctx context.Context, input dto.CreateCustomerIn
 }
 
 func (s *CustomerService) DeleteById(ctx context.Context, id uuid.UUID) error {
-	return s.DeleteById(ctx, id)
+	if err := s.customerRepo.DeleteById(ctx, id); err != nil {
+		return ErrInternal
+	}
+
+	return nil
 }

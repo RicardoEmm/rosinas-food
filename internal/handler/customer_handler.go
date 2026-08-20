@@ -7,6 +7,7 @@ import (
 	"github.com/RicardoEmm/rosinas-food/internal/service"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
+	"github.com/shopspring/decimal"
 )
 
 type CustomerHandler struct {
@@ -52,13 +53,20 @@ func (h *CustomerHandler) Create(c *gin.Context) {
 		return
 	}
 
-	input := &dto.CreateCustomerInput{
-		FullName: req.FullName,
-		Phone:    req.Phone,
-		Price:    req.Price,
+	parsedPrice, err := decimal.NewFromString(req.Price)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid price value"})
+		return
 	}
 
-	if err := h.customerService.Create(c.Request.Context(), *input); err != nil {
+	input := dto.CreateCustomerInput{
+		FullName: req.FullName,
+		Phone:    req.Phone,
+		Price:    parsedPrice,
+	}
+
+	if err := h.customerService.Create(c.Request.Context(), input); err != nil {
 		c.JSON(http.StatusConflict, gin.H{"error": err.Error()})
 		return
 	}

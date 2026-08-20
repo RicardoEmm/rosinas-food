@@ -24,7 +24,11 @@ func (r *GormCustomerRepository) DeleteById(ctx context.Context, id uuid.UUID) e
 func (r *GormCustomerRepository) ExistsByPhone(ctx context.Context, phone string) (bool, error) {
 	var count int64
 
-	if err := r.db.WithContext(ctx).Where("phone = ?", phone).Count(&count).Error; err != nil {
+	if err := r.db.WithContext(ctx).
+		Table("customers").
+		Where("phone = ?", phone).
+		Count(&count).
+		Error; err != nil {
 		return false, err
 	}
 
