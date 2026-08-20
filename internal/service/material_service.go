@@ -47,13 +47,13 @@ func (s *MaterialService) FindAll(ctx context.Context) ([]*domain.Material, erro
 }
 
 func (s *MaterialService) Create(ctx context.Context, input CreateMaterialInput) error {
-	ok, err := s.materialRepo.ExistsByName(ctx, input.Name)
+	exists, err := s.materialRepo.ExistsByName(ctx, input.Name)
 
 	if err != nil {
 		return ErrInternal
 	}
 
-	if !ok {
+	if exists {
 		return ErrMaterialNameAlreadyExists
 	}
 

@@ -42,7 +42,11 @@ func (r *GormMaterialRepository) FindAll(ctx context.Context) ([]*domain.Materia
 func (r *GormMaterialRepository) ExistsByName(ctx context.Context, name string) (bool, error) {
 	var count int64
 
-	if err := r.db.WithContext(ctx).Where("name = ?", name).Count(&count).Error; err != nil {
+	if err := r.db.WithContext(ctx).
+		Table("materials").
+		Where("name = ?", name).
+		Count(&count).
+		Error; err != nil {
 		return false, err
 	}
 

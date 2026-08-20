@@ -21,7 +21,7 @@ func NewMaterialHandler(materialService *service.MaterialService) *MaterialHandl
 }
 
 func (h *MaterialHandler) FindById(c *gin.Context) {
-	parsedID, err := strconv.Atoi("id")
+	parsedID, err := strconv.Atoi(c.Param("id"))
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid ID"})
@@ -68,7 +68,7 @@ func (h *MaterialHandler) Create(c *gin.Context) {
 }
 
 func (h *MaterialHandler) DeleteById(c *gin.Context) {
-	parsedID, err := strconv.Atoi("id")
+	parsedID, err := strconv.Atoi(c.Param("id"))
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid ID"})
