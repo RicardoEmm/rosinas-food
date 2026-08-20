@@ -56,8 +56,7 @@ func (s *IncomeService) Create(ctx context.Context, input dto.CreateIncomeInput)
 		return apperors.ErrCustomerNotFound
 	}
 
-	parsedUnitPrice, err := decimal.NewFromString(input.UnitPrice)
-
+	unitPrice, err := input.ResolvePrice(customer.Price)
 	if err != nil {
 		return apperors.ErrInvalidUnitPrice
 	}
@@ -66,8 +65,8 @@ func (s *IncomeService) Create(ctx context.Context, input dto.CreateIncomeInput)
 		Description: input.Description,
 		ProductType: incomes.ProductType(input.ProductType),
 		Quantity:    input.Quantity,
-		UnitPrice:   parsedUnitPrice,
-		Total:       parsedUnitPrice.Mul(decimal.NewFromInt(int64(input.Quantity))),
+		UnitPrice:   unitPrice,
+		Total:       unitPrice.Mul(decimal.NewFromInt(int64(input.Quantity))),
 		CustomerID:  customer.ID,
 		Status:      incomes.PaymentStatus(input.Status),
 	}); err != nil {
