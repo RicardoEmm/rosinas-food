@@ -8,6 +8,7 @@ import (
 type Handlers struct {
 	CustomerHanlder *handler.CustomerHandler
 	MaterialHandler *handler.MaterialHandler
+	IncomeHandler   *handler.IncomeHandler
 }
 
 func Setup(h Handlers) *gin.Engine {
@@ -17,6 +18,7 @@ func Setup(h Handlers) *gin.Engine {
 	{
 		registerCustomerRoutes(api, h.CustomerHanlder)
 		registerMaterialRoutes(api, h.MaterialHandler)
+		registerIncomeRoutes(api, h.IncomeHandler)
 	}
 	return router
 }
